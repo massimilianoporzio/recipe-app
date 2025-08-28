@@ -32,7 +32,7 @@ const color = useState('color', () => colors[Math.floor(Math.random() * colors.l
 </template>
 <!--
   Questo è un commento di test per verificare il funzionamento di Husky.
-  Utilizzato per assicurarsi che i pre-commit hook siano attivi e correttamente configurati.
+  Utilizzato per ahaha assicurarsi che i pre-commit hook siano attivi e correttamente configurati.
 -->
 
 <style scoped>
