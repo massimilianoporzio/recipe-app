@@ -1,5 +1,11 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: 'login'
+})
+</script>
+
 <template>
-  <h1 class="text-lg text-blue-500">
-    Hello!
-  </h1>
+  <div>
+    <h1>Home Page</h1>
+  </div>
 </template>
