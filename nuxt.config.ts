@@ -28,5 +28,12 @@ export default defineNuxtConfig({
         commaDangle: 'never'
       }
     }
+  },
+
+  // google fonts
+  googleFonts: {
+    families: {
+      Montserrat: true
+    }
   }
 })
