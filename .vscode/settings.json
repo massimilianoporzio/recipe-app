@@ -3,5 +3,8 @@
   "editor.codeActionsOnSave": {
     "source.fixAll": "always",
     "source.fixAll.eslint": "always"
-  }
+  },
+  "postman.settings.dotenv-detection-notification-visibility": false,
+  "colorize.languages": ["css", "scss", "sass", "less", "stylus", "postcss", "vue"],
+  "colorize.hide_current_line_decorations": false
 }
