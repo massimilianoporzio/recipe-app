@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RecipesResponse } from '../..//types/types'
 
-const { data, error } = await useFetch<RecipesResponse>('https://dummyjson.com/recipes?limit=12')
+const { data, error } = await useFetch<RecipesResponse>('https://dummyjson.com/redcipes?limit=12')
 console.log(data.value)
 console.log(error.value)
 </script>
@@ -41,7 +41,10 @@ console.log(error.value)
       <p class="text-lg lg:text-xl mb-8">
         Check out our most popular recipes!
       </p>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8">
+      <div
+        v-if="!error"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8"
+      >
         <div
           v-for="recipe in data?.recipes"
           :key="recipe.id"
@@ -91,6 +94,12 @@ console.log(error.value)
           </div>
         </div>
       </div>
+      <p
+        v-else
+        class="text-red-500 text-xl text-center font-bold"
+      >
+        Opps something went wrong. Please try again later.
+      </p>
     </section>
   </main>
 </template>

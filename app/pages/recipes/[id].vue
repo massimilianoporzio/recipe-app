@@ -2,7 +2,13 @@
 import type { Recipe } from '~~/types/types'
 
 const { id } = useRoute().params
-const { data: recipe } = await useFetch<Recipe>(`https://dummyjson.com/recipes/${id}`)
+const { data: recipe, error } = await useFetch<Recipe>(`https://dummyjson.com/recipes/${id}`)
+if (error.value) {
+  throw createError({
+    statusCode: error.value.statusCode || 500,
+    statusMessage: error.value.statusMessage || 'An error occurred while fetching the recipe.'
+  })
+}
 </script>
 
 <template>
