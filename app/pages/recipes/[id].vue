@@ -33,7 +33,29 @@ catch (err) {
 
 if (recipe.value) {
   const recipeTitle = recipe.value.name || 'Recipe'
-  const recipeDescription = recipe.value.instructions?.[0] || config.public.appDescription || 'Discover the easiest way to cook with our curated recipes!'
+  // ---
+  // Genera una description di almeno 100 caratteri concatenando più istruzioni se necessario
+  let recipeDescription = ''
+  if (Array.isArray(recipe.value.instructions) && recipe.value.instructions.length > 0) {
+    const descArr = []
+    let totalLen = 0
+    for (const instr of recipe.value.instructions) {
+      if (instr && typeof instr === 'string') {
+        descArr.push(instr)
+        totalLen += instr.length
+        if (totalLen >= 100) break
+      }
+    }
+    recipeDescription = descArr.join(' ')
+  }
+  // Se ancora troppo corta, usa la appDescription o una fallback
+  if (!recipeDescription || recipeDescription.length < 100) {
+    const fallback = String(config.public.appDescription || 'Discover the easiest way to cook with our curated recipes!')
+    recipeDescription = recipeDescription
+      ? (recipeDescription + ' ' + fallback).slice(0, 300)
+      : fallback
+  }
+  // ---
   const recipeImage = recipe.value.image
     ? (recipe.value.image.startsWith('http') ? recipe.value.image : siteUrl.replace(/\/$/, '') + recipe.value.image)
     : siteUrl + 'favicon.svg'

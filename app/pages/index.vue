@@ -39,7 +39,21 @@ catch (err) {
 }
 const config = useRuntimeConfig()
 const siteTitle = String(config.public.appName || 'Master the Kitchen with Ease')
-const siteDescription = String(config.public.appDescription || 'Discover recipes helping you to find the easiest way to cook.')
+// ---
+// Genera una description di almeno 100 caratteri per la homepage
+let siteDescription = String(config.public.appDescription || 'Discover recipes helping you to find the easiest way to cook.')
+if (siteDescription.length < 100 && recipesData?.recipes?.length) {
+  // Aggiungi i nomi delle prime ricette per arricchire la description
+  const recipeNames = recipesData.recipes.slice(0, 6).map(r => r.name).join(', ')
+  siteDescription = `${siteDescription} Popular recipes: ${recipeNames}.`
+  // Se ancora corta, ripeti la appDescription
+  if (siteDescription.length < 100) {
+    siteDescription = `${siteDescription} ${config.public.appDescription || ''}`.trim()
+  }
+  // Limita a 300 caratteri per evitare eccessi
+  siteDescription = siteDescription.slice(0, 300)
+}
+// ---
 const siteUrl = 'https://recipe-app.massimilianoporzio.com/'
 const siteImage = '/nuxt-course-hero.png'
 
