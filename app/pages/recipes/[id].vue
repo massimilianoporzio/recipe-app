@@ -1,13 +1,25 @@
 <script setup lang="ts">
 import type { Recipe } from '~~/types/types'
+import { logger } from '../../logger-frontend'
+import { ref } from 'vue'
 
 const { id } = useRoute().params
-const { data: recipe, error } = await useFetch<Recipe>(`https://dummyjson.com/recipes/${id}`)
-if (error.value) {
-  throw createError({
-    statusCode: error.value.statusCode || 500,
-    statusMessage: error.value.statusMessage || 'An error occurred while fetching the recipe.'
-  })
+const recipe = ref<Recipe | null>(null)
+let error = null
+try {
+  const res = await useFetch<Recipe>(`https://dummyjson.com/recipes/${id}`)
+  recipe.value = res.data.value || null
+  error = res.error
+  if (error.value) {
+    logger.error('Errore fetch ricetta: ' + (error.value.statusMessage || 'Errore generico'))
+    throw createError({
+      statusCode: error.value.statusCode || 500,
+      statusMessage: error.value.statusMessage || 'An error occurred while fetching the recipe.'
+    })
+  }
+}
+catch (err) {
+  logger.error('Eccezione fetch ricetta: ' + err)
 }
 </script>
 

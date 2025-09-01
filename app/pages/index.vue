@@ -1,9 +1,28 @@
+/*
+ *   Copyright (c) 2025 Massimiliano Porzio
+ *   All rights reserved.
+ */
 <script setup lang="ts">
 import type { RecipesResponse } from '../..//types/types'
+import { logger } from '../logger-frontend'
 
-const { data, error } = await useFetch<RecipesResponse>('https://dummyjson.com/redcipes?limit=12')
-console.log(data.value)
-console.log(error.value)
+let recipesData: RecipesResponse | null = null
+type FetchError = { statusMessage?: string }
+let fetchError: FetchError | null = null
+try {
+  const { data, error } = await useFetch<RecipesResponse>('https://dummyjson.com/recipes?limit=12')
+  recipesData = data.value ?? null
+  fetchError = error.value as FetchError | null
+  if (fetchError) {
+    logger.error('Errore fetch ricette: ' + (fetchError.statusMessage || 'Errore generico'))
+  }
+  else {
+    logger.info('Fetch ricette ok')
+  }
+}
+catch (err) {
+  logger.error('Eccezione fetch ricette: ' + err)
+}
 </script>
 
 <template>
@@ -42,11 +61,11 @@ console.log(error.value)
         Check out our most popular recipes!
       </p>
       <div
-        v-if="!error"
+        v-if="!fetchError"
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-8"
       >
         <div
-          v-for="recipe in data?.recipes"
+          v-for="recipe in recipesData?.recipes"
           :key="recipe.id"
           class="flex flex-col shadow rounded-md"
         >
