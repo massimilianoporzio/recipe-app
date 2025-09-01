@@ -1,3 +1,7 @@
+/*
+ *   Copyright (c) 2025 Massimiliano Porzio
+ *   All rights reserved.
+ */
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   // https://nuxt.com/modules
@@ -5,12 +9,24 @@ export default defineNuxtConfig({
 
   // https://devtools.nuxt.com
   devtools: { enabled: true },
+  app: {
+    head: {
+      htmlAttrs: {
+        lang: 'en'
+      },
+      link: [
+        // Example: use a Nuxt icon as favicon (SVG)
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
+      ]
+    }
+  },
 
   // Env variables - https://nuxt.com/docs/getting-started/configuration#environment-variables-and-private-tokens
   runtimeConfig: {
     public: {
-      // Can be overridden by NUXT_PUBLIC_HELLO_TEXT environment variable
-      helloText: 'Hello from the Edge 👋'
+      // App name and description (English)
+      appName: process.env.NUXT_PUBLIC_APP_NAME || 'Master the Kitchen with Ease',
+      appDescription: process.env.NUXT_PUBLIC_APP_DESCRIPTION || 'Discover the easiest way to cook with our curated recipes!'
     }
   },
   // https://nuxt.com/docs/getting-started/upgrade#testing-nuxt-4

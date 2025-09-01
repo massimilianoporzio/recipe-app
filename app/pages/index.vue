@@ -3,6 +3,7 @@
  *   All rights reserved.
  */
 <script setup lang="ts">
+import { useRuntimeConfig } from '#imports'
 import type { RecipesResponse } from '../..//types/types'
 import { logger } from '../logger-frontend'
 
@@ -23,6 +24,25 @@ try {
 catch (err) {
   logger.error('Eccezione fetch ricette: ' + err)
 }
+const config = useRuntimeConfig()
+const siteTitle = String(config.public.appName || 'Master the Kitchen with Ease')
+const siteDescription = String(config.public.appDescription || 'Discover recipes helping you to find the easiest way to cook.')
+const siteUrl = 'https://recipe-app.massimilianoporzio.com/'
+const siteImage = '/nuxt-course-hero.png'
+
+const firstRecipe = recipesData?.recipes?.[0]
+useSeoMeta({
+  title: siteTitle,
+  description: siteDescription,
+  ogTitle: siteTitle,
+  ogDescription: siteDescription,
+  ogImage: firstRecipe?.image || siteImage,
+  ogUrl: siteUrl,
+  twitterTitle: siteTitle,
+  twitterDescription: siteDescription,
+  twitterImage: firstRecipe?.image || siteImage,
+  twitterCard: 'summary'
+})
 </script>
 
 <template>
