@@ -1,3 +1,5 @@
+// Data pubblicazione per meta tag
+const publishedTime = new Date().toISOString()
 /*
  *   Copyright (c) 2025 Massimiliano Porzio
  *   All rights reserved.
@@ -8,7 +10,19 @@ import type { Recipe } from '~~/types/types'
 import { logger } from '../../logger-frontend'
 import { ref } from 'vue'
 
+const publishedTime = new Date().toISOString()
 const config = useRuntimeConfig()
+useHead({
+  htmlAttrs: {
+    lang: 'en'
+  },
+  meta: [
+    {
+      property: 'article:published_time',
+      content: publishedTime
+    }
+  ]
+})
 const siteUrl = 'https://recipe-app.massimilianoporzio.com/'
 
 const { id } = useRoute().params
@@ -50,13 +64,20 @@ useSeoMeta({
   twitterTitle: recipeTitle,
   twitterDescription: recipeDescription,
   twitterImage: recipeImage,
-  twitterCard: 'summary_large_image'
+  twitterCard: 'summary_large_image',
+  author: 'Massimiliano Porzio'
 })
 
 useHead({
   htmlAttrs: {
     lang: 'en'
-  }
+  },
+  meta: [
+    {
+      property: 'article:published_time',
+      content: publishedTime
+    }
+  ]
 })
 </script>
 

@@ -6,6 +6,16 @@
 import { useRuntimeConfig } from '#imports'
 import type { RecipesResponse } from '../..//types/types'
 import { logger } from '../logger-frontend'
+// Data pubblicazione per meta tag
+const publishedTime = new Date().toISOString()
+useHead({
+  meta: [
+    {
+      property: 'article:published_time',
+      content: publishedTime
+    }
+  ]
+})
 
 let recipesData: RecipesResponse | null = null
 type FetchError = { statusMessage?: string }
@@ -41,7 +51,6 @@ const heroImage = siteImage.startsWith('http') ? siteImage : siteUrl + siteImage
 const firstRecipeImage = firstRecipe?.image
   ? (firstRecipe.image.startsWith('http') ? firstRecipe.image : siteUrl + firstRecipe.image.replace(/^\//, ''))
   : heroImage
-
 useSeoMeta({
   title: siteTitle,
   description: siteDescription,
@@ -52,7 +61,8 @@ useSeoMeta({
   twitterTitle: siteTitle,
   twitterDescription: siteDescription,
   twitterImage: firstRecipeImage,
-  twitterCard: 'summary_large_image'
+  twitterCard: 'summary_large_image',
+  author: 'Massimiliano Porzio'
 })
 </script>
 
