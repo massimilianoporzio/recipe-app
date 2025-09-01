@@ -31,17 +31,28 @@ const siteUrl = 'https://recipe-app.massimilianoporzio.com/'
 const siteImage = '/nuxt-course-hero.png'
 
 const firstRecipe = recipesData?.recipes?.[0]
+
+// ---
+// Ensure og:image and twitter:image are always absolute URLs for social previews
+// This is important because Twitter, Facebook, and other crawlers may not resolve relative URLs correctly.
+// The logic below checks if the image path is already absolute (starts with http), otherwise prepends the siteUrl.
+// It also ensures there is no double slash in the URL.
+const heroImage = siteImage.startsWith('http') ? siteImage : siteUrl + siteImage.replace(/^\//, '')
+const firstRecipeImage = firstRecipe?.image
+  ? (firstRecipe.image.startsWith('http') ? firstRecipe.image : siteUrl + firstRecipe.image.replace(/^\//, ''))
+  : heroImage
+
 useSeoMeta({
   title: siteTitle,
   description: siteDescription,
   ogTitle: siteTitle,
   ogDescription: siteDescription,
-  ogImage: firstRecipe?.image || siteImage,
+  ogImage: firstRecipeImage,
   ogUrl: siteUrl,
   twitterTitle: siteTitle,
   twitterDescription: siteDescription,
-  twitterImage: firstRecipe?.image || siteImage,
-  twitterCard: 'summary'
+  twitterImage: firstRecipeImage,
+  twitterCard: 'summary_large_image'
 })
 </script>
 

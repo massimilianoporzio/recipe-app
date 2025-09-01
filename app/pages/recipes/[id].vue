@@ -1,11 +1,20 @@
+/*
+ *   Copyright (c) 2025 Massimiliano Porzio
+ *   All rights reserved.
+ */
 <script setup lang="ts">
+import { useRuntimeConfig } from '#imports'
 import type { Recipe } from '~~/types/types'
 import { logger } from '../../logger-frontend'
 import { ref } from 'vue'
 
+const config = useRuntimeConfig()
+const siteUrl = 'https://recipe-app.massimilianoporzio.com/'
+
 const { id } = useRoute().params
 const recipe = ref<Recipe | null>(null)
 let error = null
+
 try {
   const res = await useFetch<Recipe>(`https://dummyjson.com/recipes/${id}`)
   recipe.value = res.data.value || null
@@ -21,6 +30,34 @@ try {
 catch (err) {
   logger.error('Eccezione fetch ricetta: ' + err)
 }
+
+// Compute meta tags only after recipe is fetched
+const recipeTitle = recipe.value?.name || 'Recipe'
+const recipeDescription = recipe.value?.instructions?.[0] || config.public.appDescription || 'Discover the easiest way to cook with our curated recipes!'
+// Always use absolute URL for og:image/twitter:image
+const recipeImage = recipe.value?.image
+  ? (recipe.value.image.startsWith('http') ? recipe.value.image : siteUrl.replace(/\/$/, '') + recipe.value.image)
+  : siteUrl + 'favicon.svg'
+const recipeUrl = `${siteUrl}recipes/${id}`
+
+useSeoMeta({
+  title: recipeTitle,
+  description: recipeDescription,
+  ogTitle: recipeTitle,
+  ogDescription: recipeDescription,
+  ogImage: recipeImage,
+  ogUrl: recipeUrl,
+  twitterTitle: recipeTitle,
+  twitterDescription: recipeDescription,
+  twitterImage: recipeImage,
+  twitterCard: 'summary_large_image'
+})
+
+useHead({
+  htmlAttrs: {
+    lang: 'en'
+  }
+})
 </script>
 
 <template>
