@@ -1,30 +1,12 @@
-// Data pubblicazione per meta tag
-const publishedTime = new Date().toISOString()
-/*
- *   Copyright (c) 2025 Massimiliano Porzio
- *   All rights reserved.
- */
+// ...nothing here, just remove the stray tag...
 <script setup lang="ts">
 import { useRuntimeConfig } from '#imports'
 import type { Recipe } from '~~/types/types'
 import { logger } from '../../logger-frontend'
 import { ref } from 'vue'
 
-const publishedTime = new Date().toISOString()
 const config = useRuntimeConfig()
-useHead({
-  htmlAttrs: {
-    lang: 'en'
-  },
-  meta: [
-    {
-      property: 'article:published_time',
-      content: publishedTime
-    }
-  ]
-})
 const siteUrl = 'https://recipe-app.massimilianoporzio.com/'
-
 const { id } = useRoute().params
 const recipe = ref<Recipe | null>(null)
 let error = null
@@ -45,40 +27,79 @@ catch (err) {
   logger.error('Eccezione fetch ricetta: ' + err)
 }
 
-// Compute meta tags only after recipe is fetched
-const recipeTitle = recipe.value?.name || 'Recipe'
-const recipeDescription = recipe.value?.instructions?.[0] || config.public.appDescription || 'Discover the easiest way to cook with our curated recipes!'
-// Always use absolute URL for og:image/twitter:image
-const recipeImage = recipe.value?.image
-  ? (recipe.value.image.startsWith('http') ? recipe.value.image : siteUrl.replace(/\/$/, '') + recipe.value.image)
-  : siteUrl + 'favicon.svg'
-const recipeUrl = `${siteUrl}recipes/${id}`
+if (recipe.value) {
+  const recipeTitle = recipe.value.name || 'Recipe'
+  const recipeDescription = recipe.value.instructions?.[0] || config.public.appDescription || 'Discover the easiest way to cook with our curated recipes!'
+  const recipeImage = recipe.value.image
+    ? (recipe.value.image.startsWith('http') ? recipe.value.image : siteUrl.replace(/\/$/, '') + recipe.value.image)
+    : siteUrl + 'favicon.svg'
+  const recipeUrl = `${siteUrl}recipes/${id}`
+  const canonicalUrl = recipeUrl
+  const publishedTime = new Date().toISOString()
+  const siteName = 'Recipe App'
+  const twitterHandle = '@massimilianoporzio' // Cambia con il tuo handle reale se ne hai uno
+  const articleTags = (recipe.value.ingredients || []).slice(0, 3).map(tag => ({
+    property: 'article:tag',
+    content: tag
+  }))
 
-useSeoMeta({
-  title: recipeTitle,
-  description: recipeDescription,
-  ogTitle: recipeTitle,
-  ogDescription: recipeDescription,
-  ogImage: recipeImage,
-  ogUrl: recipeUrl,
-  twitterTitle: recipeTitle,
-  twitterDescription: recipeDescription,
-  twitterImage: recipeImage,
-  twitterCard: 'summary_large_image',
-  author: 'Massimiliano Porzio'
-})
+  useSeoMeta({
+    title: recipeTitle,
+    description: recipeDescription,
+    ogTitle: recipeTitle,
+    ogDescription: recipeDescription,
+    ogImage: recipeImage,
+    ogUrl: recipeUrl,
+    twitterTitle: recipeTitle,
+    twitterDescription: recipeDescription,
+    twitterImage: recipeImage,
+    twitterCard: 'summary_large_image',
+    author: 'Massimiliano Porzio',
+    ogType: 'article',
+    ogSiteName: siteName,
+    twitterSite: twitterHandle,
+    twitterCreator: twitterHandle
+  })
 
-useHead({
-  htmlAttrs: {
-    lang: 'en'
-  },
-  meta: [
-    {
-      property: 'article:published_time',
-      content: publishedTime
-    }
-  ]
-})
+  useHead({
+    htmlAttrs: {
+      lang: 'en'
+    },
+    meta: [
+      {
+        property: 'article:published_time',
+        content: publishedTime
+      },
+      {
+        property: 'article:section',
+        content: recipe.value.cuisine || 'Recipe'
+      },
+      ...articleTags
+    ],
+    link: [
+      { rel: 'canonical', href: canonicalUrl }
+    ],
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify({
+          '@context': 'https://schema.org/',
+          '@type': 'Recipe',
+          'name': recipeTitle,
+          'image': recipeImage,
+          'author': {
+            '@type': 'Person',
+            'name': 'Massimiliano Porzio'
+          },
+          'datePublished': publishedTime,
+          'description': recipeDescription,
+          'recipeIngredient': recipe.value.ingredients || [],
+          'recipeInstructions': recipe.value.instructions || []
+        })
+      }
+    ]
+  })
+}
 </script>
 
 <template>
