@@ -1,3 +1,7 @@
+/*
+ *   Copyright (c) 2025 Massimiliano Porzio
+ *   All rights reserved.
+ */
 // ...nothing here, just remove the stray tag...
 <script setup lang="ts">
 import { useRuntimeConfig } from '#imports'
@@ -35,7 +39,8 @@ if (recipe.value) {
     : siteUrl + 'favicon.svg'
   const recipeUrl = `${siteUrl}recipes/${id}`
   const canonicalUrl = recipeUrl
-  const publishedTime = new Date().toISOString()
+  // Data di pubblicazione fissa per tutte le ricette (ora di questa richiesta)
+  const publishedTime = '2025-09-02T10:00:00.000Z' // Sostituisci con la data/ora attuale
   const siteName = 'Recipe App'
   const twitterHandle = '@massimilianoporzio' // Cambia con il tuo handle reale se ne hai uno
   const articleTags = (recipe.value.ingredients || []).slice(0, 3).map(tag => ({

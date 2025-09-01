@@ -7,15 +7,18 @@ import { useRuntimeConfig } from '#imports'
 import type { RecipesResponse } from '../..//types/types'
 import { logger } from '../logger-frontend'
 // Data pubblicazione per meta tag
-const publishedTime = new Date().toISOString()
-useHead({
-  meta: [
-    {
-      property: 'article:published_time',
-      content: publishedTime
-    }
-  ]
-})
+// Data di pubblicazione fissa per tutte le ricette (ora di questa richiesta)
+const publishedTime = '2025-09-02T10:00:00.000Z' // Sostituisci con la data/ora attuale
+
+// ...existing code...
+
+// Tutte le variabili sono ora definite, quindi chiama useHead qui
+
+// ...existing code...
+
+// ...existing code...
+
+// Tutte le variabili sono ora definite, quindi chiama useHead qui IN FONDO AL BLOCCO SCRIPT
 
 let recipesData: RecipesResponse | null = null
 type FetchError = { statusMessage?: string }
@@ -63,6 +66,43 @@ useSeoMeta({
   twitterImage: firstRecipeImage,
   twitterCard: 'summary_large_image',
   author: 'Massimiliano Porzio'
+})
+useHead({
+  meta: [
+    {
+      property: 'article:published_time',
+      content: publishedTime
+    }
+  ],
+  script: [
+    {
+      type: 'application/ld+json',
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        'name': siteTitle,
+        'url': siteUrl,
+        'description': siteDescription
+      })
+    },
+    recipesData?.recipes && recipesData.recipes.length > 0
+      ? {
+          type: 'application/ld+json',
+          innerHTML: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            'itemListElement': (recipesData.recipes.slice(0, 6).map((r, i) => ({
+              '@type': 'ListItem',
+              'position': i + 1,
+              'url': siteUrl + 'recipes/' + r.id,
+              'name': r.name,
+              'image': r.image,
+              'datePublished': publishedTime
+            })))
+          })
+        }
+      : null
+  ].filter(Boolean)
 })
 </script>
 
