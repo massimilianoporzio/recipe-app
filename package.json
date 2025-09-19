@@ -34,7 +34,7 @@
     "vue-tsc": "^3.0.6",
     "wrangler": "^4.33.1"
   },
-  "packageManager": "pnpm@10.15.0",
+  "packageManager": "pnpm@10.16.1",
   "lint-staged": {
     "*.{js,ts,vue}": [
       "eslint --fix"
